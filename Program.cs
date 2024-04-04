@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
-class EightQueens
+class EightQueensSolver
 {
   // Size of the chessboard (8x8)
   public static int BoardSize = 8;
@@ -15,14 +14,14 @@ class EightQueens
     for (int i = 0; i < BoardSize; i++)
     {
       for (int j = 0; j < BoardSize; j++)
-        sb.Append(" " + board[i, j] + " ");
-      sb.Append("\n");
+        sb.Append($" {board[i, j]} ");
+      sb.Append('\n');
     }
     return sb.ToString();
   }
 
   // A utility function to check if a queen can be placed on board[row][col]
-  bool IsSafe(char[,] board, int row, int col)
+  bool IsSafeSquare(char[,] board, int row, int col)
   {
     int i, j;
 
@@ -45,7 +44,7 @@ class EightQueens
   }
 
   // A recursive utility function to solve the 8 Queens problem
-  bool SolveNQUtil(char[,] board, int col)
+  bool SolveRecursive(char[,] board, int col)
   {
     // If all queens are placed then return true
     if (col >= BoardSize)
@@ -55,13 +54,13 @@ class EightQueens
     for (int i = 0; i < BoardSize; i++)
     {
       // Check if the queen can be placed on board[i][col]
-      if (IsSafe(board, i, col))
+      if (IsSafeSquare(board, i, col))
       {
         // Place this queen in board[i][col]
         board[i, col] = Queen;
 
         // Recur to place rest of the queens
-        if (SolveNQUtil(board, col + 1))
+        if (SolveRecursive(board, col + 1))
           return true;
 
         // If placing queen in board[i][col] doesn't lead to a solution, then remove queen from board[i][col]
@@ -74,14 +73,14 @@ class EightQueens
   }
 
   // This function solves the 8 Queens problem using Backtracking
-  public bool SolveNQ()
+  public bool Solve()
   {
     char[,] board = new char[BoardSize, BoardSize];
     for (int i = 0; i < BoardSize; i++)
       for (int j = 0; j < BoardSize; j++)
         board[i, j] = Empty;
 
-    if (!SolveNQUtil(board, 0))
+    if (!SolveRecursive(board, 0))
     {
       Console.WriteLine("Solution does not exist");
       return false;
@@ -92,9 +91,9 @@ class EightQueens
   }
 
   // Main function
-  public static void Main(String[] args)
+  public static void Main(string[] args)
   {
-    EightQueens Queen = new EightQueens();
-    Queen.SolveNQ();
+    var solver = new EightQueensSolver();
+    solver.Solve();
   }
 }
