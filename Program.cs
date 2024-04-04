@@ -1,66 +1,71 @@
 ﻿using System;
+using System.Text;
 
 class EightQueens
 {
   // Size of the chessboard (8x8)
-  public static int N = 8;
+  public static int BoardSize = 8;
+  private const char Queen = 'Q';
+  private const char Empty = '.';
 
   // Function to print the board
-  void PrintSolution(int[,] board)
+  string SolutionToText(char[,] board)
   {
-    for (int i = 0; i < N; i++)
+    var sb = new StringBuilder();
+    for (int i = 0; i < BoardSize; i++)
     {
-      for (int j = 0; j < N; j++)
-        Console.Write(" " + board[i, j] + " ");
-      Console.WriteLine();
+      for (int j = 0; j < BoardSize; j++)
+        sb.Append(" " + board[i, j] + " ");
+      sb.Append("\n");
     }
+    return sb.ToString();
   }
 
   // A utility function to check if a queen can be placed on board[row][col]
-  bool IsSafe(int[,] board, int row, int col)
+  bool IsSafe(char[,] board, int row, int col)
   {
     int i, j;
 
     // Check this row on left side
     for (i = 0; i < col; i++)
-      if (board[row, i] == 1)
+      if (board[row, i] == Queen)
         return false;
 
     // Check upper diagonal on left side
     for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
-      if (board[i, j] == 1)
+      if (board[i, j] == Queen)
         return false;
 
     // Check lower diagonal on left side
-    for (i = row, j = col; j >= 0 && i < N; i++, j--)
-      if (board[i, j] == 1)
+    for (i = row, j = col; j >= 0 && i < BoardSize; i++, j--)
+      if (board[i, j] == Queen)
         return false;
 
     return true;
   }
 
   // A recursive utility function to solve the 8 Queens problem
-  bool SolveNQUtil(int[,] board, int col)
+  bool SolveNQUtil(char[,] board, int col)
   {
     // If all queens are placed then return true
-    if (col >= N)
+    if (col >= BoardSize)
       return true;
 
     // Consider this column and try placing this queen in all rows one by one
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < BoardSize; i++)
     {
       // Check if the queen can be placed on board[i][col]
       if (IsSafe(board, i, col))
       {
         // Place this queen in board[i][col]
-        board[i, col] = 1;
+        board[i, col] = Queen;
 
         // Recur to place rest of the queens
         if (SolveNQUtil(board, col + 1))
           return true;
 
         // If placing queen in board[i][col] doesn't lead to a solution, then remove queen from board[i][col]
-        board[i, col] = 0; // BACKTRACK
+        board[i, col] = Empty; // BACKTRACK
       }
     }
 
@@ -71,7 +76,10 @@ class EightQueens
   // This function solves the 8 Queens problem using Backtracking
   public bool SolveNQ()
   {
-    int[,] board = new int[N, N];
+    char[,] board = new char[BoardSize, BoardSize];
+    for (int i = 0; i < BoardSize; i++)
+      for (int j = 0; j < BoardSize; j++)
+        board[i, j] = Empty;
 
     if (!SolveNQUtil(board, 0))
     {
@@ -79,7 +87,7 @@ class EightQueens
       return false;
     }
 
-    PrintSolution(board);
+    Console.WriteLine(SolutionToText(board));
     return true;
   }
 
