@@ -3,17 +3,26 @@
 class EightQueensSolver
 {
   // Size of the chessboard (8x8)
-  public static int BoardSize = 8;
+  private int boardSize = 8;
   private const char Queen = 'Q';
   private const char Empty = '.';
 
+  private char[,] board;
+
+
+  public EightQueensSolver(int boardSize = 8)
+  {
+    this.boardSize = boardSize;
+    board = new char[boardSize, boardSize];
+  }
+
   // Function to print the board
-  string SolutionToText(char[,] board)
+  string SolutionToText()
   {
     var sb = new StringBuilder();
-    for (int i = 0; i < BoardSize; i++)
+    for (int i = 0; i < boardSize; i++)
     {
-      for (int j = 0; j < BoardSize; j++)
+      for (int j = 0; j < boardSize; j++)
         sb.Append($" {board[i, j]} ");
       sb.Append('\n');
     }
@@ -21,7 +30,7 @@ class EightQueensSolver
   }
 
   // A utility function to check if a queen can be placed on board[row][col]
-  bool IsSafeSquare(char[,] board, int row, int col)
+  bool IsSafeSquare(int row, int col)
   {
     int i, j;
 
@@ -36,7 +45,7 @@ class EightQueensSolver
         return false;
 
     // Check lower diagonal on left side
-    for (i = row, j = col; j >= 0 && i < BoardSize; i++, j--)
+    for (i = row, j = col; j >= 0 && i < boardSize; i++, j--)
       if (board[i, j] == Queen)
         return false;
 
@@ -44,23 +53,23 @@ class EightQueensSolver
   }
 
   // A recursive utility function to solve the 8 Queens problem
-  bool SolveRecursive(char[,] board, int col)
+  bool SolveRecursive(int col)
   {
     // If all queens are placed then return true
-    if (col >= BoardSize)
+    if (col >= boardSize)
       return true;
 
     // Consider this column and try placing this queen in all rows one by one
-    for (int i = 0; i < BoardSize; i++)
+    for (int i = 0; i < boardSize; i++)
     {
       // Check if the queen can be placed on board[i][col]
-      if (IsSafeSquare(board, i, col))
+      if (IsSafeSquare(i, col))
       {
         // Place this queen in board[i][col]
         board[i, col] = Queen;
 
         // Recur to place rest of the queens
-        if (SolveRecursive(board, col + 1))
+        if (SolveRecursive(col + 1))
           return true;
 
         // If placing queen in board[i][col] doesn't lead to a solution, then remove queen from board[i][col]
@@ -75,25 +84,28 @@ class EightQueensSolver
   // This function solves the 8 Queens problem using Backtracking
   public bool Solve()
   {
-    char[,] board = new char[BoardSize, BoardSize];
-    for (int i = 0; i < BoardSize; i++)
-      for (int j = 0; j < BoardSize; j++)
+    for (int i = 0; i < boardSize; i++)
+      for (int j = 0; j < boardSize; j++)
         board[i, j] = Empty;
 
-    if (!SolveRecursive(board, 0))
-    {
-      Console.WriteLine("Solution does not exist");
-      return false;
-    }
-
-    Console.WriteLine(SolutionToText(board));
-    return true;
+    return SolveRecursive(0);
   }
 
   // Main function
   public static void Main(string[] args)
   {
-    var solver = new EightQueensSolver();
+    int boardSize = (args.Length > 0 && int.TryParse(args[0], out boardSize) && boardSize > 0) ? boardSize : 8;
+    Console.WriteLine($"Solving the {boardSize} Queens problem");
+    var solver = new EightQueensSolver(boardSize);
     solver.Solve();
+    if (solver.Solve())
+    {
+      Console.WriteLine(solver.SolutionToText());
+    }
+    else
+    {
+      Console.WriteLine($"Solution does not exist for a {boardSize}x{boardSize} board.");
+    }
+
   }
 }
