@@ -2,12 +2,10 @@
 
 class EightQueensSolver
 {
-  // Size of the chessboard (8x8)
-  private int boardSize = 8;
   private const char Queen = 'Q';
   private const char Empty = '.';
-
-  private char[,] board;
+  private readonly int boardSize;
+  private readonly char[,] board;
 
 
   public EightQueensSolver(int boardSize = 8)
@@ -106,6 +104,5 @@ class EightQueensSolver
     {
       Console.WriteLine($"Solution does not exist for a {boardSize}x{boardSize} board.");
     }
-
   }
 }
